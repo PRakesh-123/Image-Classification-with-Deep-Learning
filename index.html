@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Classification with Deep Learning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #inputBox {
+            margin: 20px auto;
+            padding: 10px;
+        }
+        #result {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Classification with Deep Learning</h1>
+    
+    <div id="inputBox">
+        <label for="imageInput">Upload an image:</label><br>
+        <input type="file" id="imageInput"><br>
+        <button onclick="classifyImage()">Classify Image</button>
+    </div>
+
+    <div id="result">
+        <h2>Classification Result:</h2>
+        <p id="classificationResult"></p>
+        <img src="" alt="Classified Image" id="classifiedImage" style="display: none; max-width: 400px;">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <script>
+        async function classifyImage() {
+            const imageInput = document.getElementById("imageInput");
+            const imageFile = imageInput.files[0];
+
+            if (imageFile) {
+                const imageElement = document.createElement("img");
+                imageElement.src = URL.createObjectURL(imageFile);
+
+                // Load the MobileNet model
+                const mobilenetModel = await mobilenet.load();
+
+                // Classify the uploaded image
+                const predictions = await mobilenetModel.classify(imageElement);
+
+                // Display the classification result and image
+                const classificationResult = document.getElementById("classificationResult");
+                classificationResult.textContent = `Classification Result: ${predictions[0].className}`;
+                const classifiedImage = document.getElementById("classifiedImage");
+                classifiedImage.src = imageElement.src;
+                classifiedImage.style.display = "block";
+            } else {
+                alert("Please select an image.");
+            }
+        }
+    </script>
+</body>
+</html>
